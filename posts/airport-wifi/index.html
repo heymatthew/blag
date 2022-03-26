@@ -1,0 +1,16 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><link rel=stylesheet href=/css/bootstrap.min.css><title>Wifi Tricks and the Secret to Endless Airport Internet</title></head><body><div class=container><main id=main><h1>Wifi Tricks and the Secret to Endless Airport Internet</h1><p>While I was in Airport, I had a time limit on my Wifi which I used up
+too fast. So now all I&rsquo;ve got on my mind is the challenge of getting
+back onto the internet.</p><p>Who limits Wifi anyway? What are we? Savages?</p><p>In this case I didn&rsquo;t have to do much because I had a snippet of code I
+took from my old workmate <a href=https://www.sanityinc.com/about>Steve Purcell</a>. It&rsquo;s sole purpose is to
+generate a random Mac address, and make that callable from the zsh
+shell.</p><p>Because he never got around to publishing it, here it goes!</p><pre tabindex=0><code>function randommac() {
+  ruby -e &#39;puts (&#34;%02x&#34;%((rand 64)*4|2))+(0..4).inject(&#34;&#34;){|s,x|s+&#34;:%02x&#34;%(rand 256)}&#39;
+}
+</code></pre><p>If you put this in your zshrc, it&rsquo;ll happliy generate you a mac address.
+Here&rsquo;s how you&rsquo;d call it:</p><pre tabindex=0><code>randommac
+&gt; e2:f0:48:69:cc:7c
+</code></pre><p>The only way the router can identify you is through your hardware
+address. Use this command to set your wifi&rsquo;s mac and that should get you
+around being identified. In my case, I reset my hardware address by
+running:</p><pre tabindex=0><code>sudo ifconfig en0 lladdr $(randommac)
+</code></pre><p>Reconnecting got me another hit of that sweet sweet wifi! Thanks Steve!</p></main></div></body></html>
