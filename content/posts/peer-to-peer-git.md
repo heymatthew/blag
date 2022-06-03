@@ -1,7 +1,8 @@
-+++
-date = "2017-03-31T17:37:49+13:00"
-title = "Peer to Peer Git"
-+++
+---
+date: "2017-03-31T17:37:49+13:00"
+title: "Peer to Peer Git"
+summary: Pull between two computers on the same network.
+---
 
 Sometimes your central git repository goes down, but you need to share code. That's a bummer, you can commit and wait, but you've likely heard that you shouldn't need to rely on a central repo.
 
