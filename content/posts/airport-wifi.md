@@ -18,7 +18,7 @@ shell.
 
 Because he never got around to publishing it, here it goes!
 
-```
+```sh
 function randommac() {
   ruby -e 'puts ("%02x"%((rand 64)*4|2))+(0..4).inject(""){|s,x|s+":%02x"%(rand 256)}'
 }
@@ -27,7 +27,7 @@ function randommac() {
 If you put this in your zshrc, it'll happliy generate you a mac address.
 Here's how you'd call it:
 
-```
+```sh
 randommac
 > e2:f0:48:69:cc:7c
 ```
@@ -37,7 +37,7 @@ address. Use this command to set your wifi's mac and that should get you
 around being identified. In my case, I reset my hardware address by
 running:
 
-```
+```sh
 sudo ifconfig en0 lladdr $(randommac)
 ```
 
