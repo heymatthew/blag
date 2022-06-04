@@ -3,8 +3,7 @@ languageCode: en-nz
 title: Matthew's Blag
 theme: basalt
 
-permalinks:
-  posts: '/:year/:month/:title/'
+uglyurls: true
 
 menu:
   main:
@@ -13,7 +12,7 @@ menu:
       weight: 1
 
     - name: Posts
-      url: /posts/
+      url: /posts.html
       weight: 2
 
 # Don't use inline styles for code
