@@ -15,6 +15,10 @@ menu:
       url: /posts.html
       weight: 2
 
+    - name: Reading
+      url: /reading.html
+      weight: 3
+
 # Don't use inline styles for code
 markup:
   highlight:
