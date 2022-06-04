@@ -8,13 +8,13 @@ too fast. So now all I&rsquo;ve got on my mind is the challenge of getting
 back onto the internet.</p><p>Who limits Wifi anyway? What are we? Savages?</p><p>In this case I didn&rsquo;t have to do much because I had a snippet of code I
 took from my old workmate <a href=https://www.sanityinc.com/about>Steve Purcell</a>. It&rsquo;s sole purpose is to
 generate a random Mac address, and make that callable from the zsh
-shell.</p><p>Because he never got around to publishing it, here it goes!</p><pre tabindex=0><code>function randommac() {
-  ruby -e &#39;puts (&#34;%02x&#34;%((rand 64)*4|2))+(0..4).inject(&#34;&#34;){|s,x|s+&#34;:%02x&#34;%(rand 256)}&#39;
-}
-</code></pre><p>If you put this in your zshrc, it&rsquo;ll happliy generate you a mac address.
-Here&rsquo;s how you&rsquo;d call it:</p><pre tabindex=0><code>randommac
-&gt; e2:f0:48:69:cc:7c
-</code></pre><p>The only way the router can identify you is through your hardware
+shell.</p><p>Because he never got around to publishing it, here it goes!</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=k>function</span> randommac<span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>  ruby -e <span class=s1>&#39;puts (&#34;%02x&#34;%((rand 64)*4|2))+(0..4).inject(&#34;&#34;){|s,x|s+&#34;:%02x&#34;%(rand 256)}&#39;</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></div><p>If you put this in your zshrc, it&rsquo;ll happliy generate you a mac address.
+Here&rsquo;s how you&rsquo;d call it:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>randommac
+</span></span><span class=line><span class=cl>&gt; e2:f0:48:69:cc:7c
+</span></span></code></pre></div><p>The only way the router can identify you is through your hardware
 address. Use this command to set your wifi&rsquo;s mac and that should get you
 around being identified. In my case, I reset my hardware address by
 running:</p><pre tabindex=0><code>sudo ifconfig en0 lladdr $(randommac)
