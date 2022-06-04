@@ -17,6 +17,7 @@ pre.chroma {
 }
 
 h1, h2, h3, h4, h5, h6 {
+  color: #262626;
   position: relative;
   margin: 1em 0 0 0;
 }
@@ -26,7 +27,7 @@ p {
 }
 
 a, a:visited {
-  color: #2D4B73;
+  color: #4F4D8C;
   text-decoration: none;
   border-bottom: 2px solid;
   padding-bottom: 1px;
