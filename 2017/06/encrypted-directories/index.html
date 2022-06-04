@@ -1,0 +1,106 @@
+<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/style.css><link rel=stylesheet type=text/css href=/css/syntax.css><title>Matthew's Blag | Encrypted Directories</title></head><body><nav class=sidebar-nav><a href=/posts/ title class=sidebar-nav-item>Posts</a>
+<a href=/ title class=sidebar-nav-item>About</a></nav><div id=content><h1>Encrypted Directories</h1><time datetime=2017-06-03>Jun 3, 2017</time><p>In the *nix ecosystem, there are a lot of tools that are great to
+chain together. I&rsquo;d encourage everyone to learn their tools, but
+sometimes the tools are complex, and you only want to do something
+simple.</p><p>I keep forgetting how to crypto. What I generally want to do is
+encrypt and sign a directory, then pull that same directory later.</p><p>Here&rsquo;s the script I threw together today. It takes one argument,
+either a directory to encrypt, or a gnupg encrypted tar gzipped
+directory and extracts it.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-ruby data-lang=ruby><span class=line><span class=cl><span class=ch>#!/usr/bin/env ruby</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># gpg_folder - Script to quickly tar, compress and encrypt directories</span>
+</span></span><span class=line><span class=cl><span class=c1># Copyright (C) 2017  Matthew B. Gray</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># This program is free software: you can redistribute it and/or modify</span>
+</span></span><span class=line><span class=cl><span class=c1># it under the terms of the GNU General Public License as published by</span>
+</span></span><span class=line><span class=cl><span class=c1># the Free Software Foundation, either version 3 of the License, or</span>
+</span></span><span class=line><span class=cl><span class=c1># (at your option) any later version.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># This program is distributed in the hope that it will be useful,</span>
+</span></span><span class=line><span class=cl><span class=c1># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+</span></span><span class=line><span class=cl><span class=c1># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+</span></span><span class=line><span class=cl><span class=c1># GNU General Public License for more details.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># You should have received a copy of the GNU General Public License</span>
+</span></span><span class=line><span class=cl><span class=c1># along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># GpgFolder service drives the OS to perform encrypt/decrypt methods</span>
+</span></span><span class=line><span class=cl><span class=no>GpgFolder</span> <span class=o>=</span> <span class=no>Struct</span><span class=o>.</span><span class=n>new</span><span class=p>(</span><span class=ss>:opts</span><span class=p>)</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>call</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kp>false</span> <span class=k>if</span> <span class=n>opts</span><span class=o>.</span><span class=n>errors</span><span class=o>.</span><span class=n>any?</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>opts</span><span class=o>.</span><span class=n>encrypt?</span>
+</span></span><span class=line><span class=cl>      <span class=n>do_encrypt</span>
+</span></span><span class=line><span class=cl>    <span class=k>elsif</span> <span class=n>opts</span><span class=o>.</span><span class=n>decrypt?</span>
+</span></span><span class=line><span class=cl>      <span class=n>do_decrypt</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span>
+</span></span><span class=line><span class=cl>      <span class=k>raise</span> <span class=s2>&#34;;_; --not sure what I should do now&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kp>true</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>print_errors</span>
+</span></span><span class=line><span class=cl>    <span class=nb>puts</span> <span class=s2>&#34;Computer says no&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>errors</span><span class=o>.</span><span class=n>each</span> <span class=k>do</span> <span class=o>|</span><span class=n>error</span><span class=o>|</span>
+</span></span><span class=line><span class=cl>      <span class=nb>puts</span> <span class=s2>&#34;* </span><span class=si>#{</span><span class=n>error</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>end</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kp>private</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>do_encrypt</span>
+</span></span><span class=line><span class=cl>    <span class=n>run</span><span class=p>(</span><span class=s2>&#34;tar -cz </span><span class=si>#{</span><span class=n>opts</span><span class=o>.</span><span class=n>dir_name</span><span class=si>}</span><span class=s2> | gpg --sign -o </span><span class=si>#{</span><span class=n>opts</span><span class=o>.</span><span class=n>archive_name</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>do_decrypt</span>
+</span></span><span class=line><span class=cl>    <span class=n>run</span><span class=p>(</span><span class=s2>&#34;gpg -d </span><span class=si>#{</span><span class=n>opts</span><span class=o>.</span><span class=n>archive_name</span><span class=si>}</span><span class=s2> | tar xz&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>run</span><span class=p>(</span><span class=n>cmd</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>puts</span> <span class=n>cmd</span>
+</span></span><span class=line><span class=cl>    <span class=nb>system</span><span class=p>(</span><span class=n>cmd</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl><span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Interprets how the application was called, used to direct GpgFolder service</span>
+</span></span><span class=line><span class=cl><span class=no>Options</span> <span class=o>=</span> <span class=no>Struct</span><span class=o>.</span><span class=n>new</span><span class=p>(</span><span class=ss>:dir_or_file</span><span class=p>)</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>  <span class=no>CRYPT_EXTENSION</span> <span class=o>=</span> <span class=sr>/\.tgz.gpg\z/</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>errors</span>
+</span></span><span class=line><span class=cl>    <span class=vi>@errors</span> <span class=o>||=</span> <span class=o>[].</span><span class=n>tap</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>      <span class=k>unless</span> <span class=n>encrypt?</span> <span class=o>^</span> <span class=n>decrypt?</span>
+</span></span><span class=line><span class=cl>        <span class=n>errors</span> <span class=o>&lt;&lt;</span> <span class=s2>&#34;Please specify a directory to encrypt, or a file ending in .tgz.gpg&#34;</span>
+</span></span><span class=line><span class=cl>      <span class=k>end</span>
+</span></span><span class=line><span class=cl>    <span class=k>end</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>encrypt?</span>
+</span></span><span class=line><span class=cl>    <span class=o>!</span><span class=n>dir_or_file</span><span class=o>.</span><span class=n>nil?</span> <span class=o>&amp;&amp;</span> <span class=o>!</span><span class=n>decrypt?</span> <span class=o>&amp;&amp;</span> <span class=no>File</span><span class=o>.</span><span class=n>directory?</span><span class=p>(</span><span class=n>dir_or_file</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>decrypt?</span>
+</span></span><span class=line><span class=cl>    <span class=o>!</span><span class=n>dir_or_file</span><span class=o>.</span><span class=n>nil?</span> <span class=o>&amp;&amp;</span> <span class=n>dir_or_file</span><span class=o>.</span><span class=n>match</span><span class=p>(</span><span class=no>CRYPT_EXTENSION</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>dir_name</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>encrypt?</span>
+</span></span><span class=line><span class=cl>      <span class=n>dir_or_file</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span>
+</span></span><span class=line><span class=cl>      <span class=n>dir_or_file</span><span class=o>.</span><span class=n>sub</span><span class=p>(</span><span class=no>CRYPT_EXTENSION</span><span class=p>,</span> <span class=s1>&#39;&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>end</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>archive_name</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>encrypt?</span>
+</span></span><span class=line><span class=cl>      <span class=s2>&#34;</span><span class=si>#{</span><span class=n>dir_or_file</span><span class=si>}</span><span class=s2>.tgz.gpg&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span>
+</span></span><span class=line><span class=cl>      <span class=n>dir_or_file</span>
+</span></span><span class=line><span class=cl>    <span class=k>end</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl><span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>opts</span> <span class=o>=</span> <span class=no>Options</span><span class=o>.</span><span class=n>new</span><span class=p>(</span><span class=no>ARGV</span><span class=o>.</span><span class=n>first</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>service</span> <span class=o>=</span> <span class=no>GpgFolder</span><span class=o>.</span><span class=n>new</span><span class=p>(</span><span class=n>opts</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>service</span><span class=o>.</span><span class=n>call</span> <span class=ow>or</span> <span class=n>service</span><span class=o>.</span><span class=n>print_errors</span>
+</span></span></code></pre></div></div><footer><p><a rel=license href=http://creativecommons.org/licenses/by-nc-sa/3.0/><img alt="Creative Commons License" style=border-width:0 src=https://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png></a></p><p>This work is licensed under a
+<a rel=license href=http://creativecommons.org/licenses/by-nc-sa/3.0/>Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.</p></footer><script>console.log("Hello world")</script></body></html>

@@ -1,0 +1,73 @@
+<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/style.css><link rel=stylesheet type=text/css href=/css/syntax.css><title>Matthew's Blag | CTags in Ruby: Make code feel like a wiki</title></head><body><nav class=sidebar-nav><a href=/posts/ title class=sidebar-nav-item>Posts</a>
+<a href=/ title class=sidebar-nav-item>About</a></nav><div id=content><h1>CTags in Ruby: Make code feel like a wiki</h1><time datetime=2017-02-21>Feb 21, 2017</time><p>In a browser you markup for links. A wiki builds on this behavior to describes topics, linking nouns to pages in context that link to other nown pages.</p><p>Browsing a wiki allows you to dive into information and build up your mental model of a subject area&ndash; which is kind of addictive. Why can&rsquo;t we do the same thing in our code?</p><p>Code has syntax which are just links between files. We often do this linking in our heads, but our editor should be helping you out more&ndash; at some stage there&rsquo;s a black box that you&rsquo;ve never stepped into because it&rsquo;s outside of your project.</p><p>There have been attempts to make code behave like links through static and dynamic analysis. Here are some of the projects on my radar that pull this off:</p><ol><li><a href=http://help.eclipse.org/neon/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/ui/views/navigator/package-summary.html>Resource Navigation</a> integrated throughtout the Eclipse IDE</li><li><a href=http://ricostacruz.com/til/navigate-code-with-ctags>Ctags</a> integration for vim</li><li><a href=https://godoc.org/golang.org/x/tools/cmd/guru>Go Guru</a> integration via the <a href=https://github.com/fatih/vim-go>vim-go</a> plugin</li><li><a href=https://sourcegraph.com>Sourcegraph</a> integartion via the <a href=https://github.com/lazywei/vim-sourcegraph>vim-sourcegraph</a> plugin</li></ol><p>If you&rsquo;re hacking on an opensource project, then sourcegraph is the natural choice at the moment as it gives you access to community and examples you may not have even checked out.</p><p>However I&rsquo;m a Rubyist on a closed source thing at work, and I don&rsquo;t think I can convince my managers just yet to shell out for a sourcegraph subscription. This leaves me with ctags.</p><p>Ctags create a &ldquo;tags&rdquo; file which Vim knows how to navigate out of the box with <code>Ctrl + ]</code>. Those tags are a snapshot of static analysis mapping the links between files in your project.</p><p>If you don&rsquo;t want to mess up your project files though, and you have <a href=https://github.com/tpope/vim-fugitive>vim-fugitive</a>, then I recommend you specify your tags file location in <code>.git/tags</code>.</p><p>Initially I found plugins that ran this command on every file write. However this quickly became unweildy as it builds a massive head of background procs that turn your responsive computer into a slow hulking mass of rage.</p><p>A better way to think about this is &ldquo;when you think code is ready enough to share&rdquo;. This happens for me when I run git commands, specifically <code>git commit</code> and <code>git checkout</code>.</p><p>You can run actions post by adding executable scripts to <code>.git/hooks/</code> with special names. There&rsquo;s a great overview on <a href=http://githooks.com/>githooks.com</a>, but for this exersise I&rsquo;m only interested in <code>post-commit</code>, <code>post-checkout</code> and <code>post-rewrite</code>. There are others, but these are the ones I&rsquo;m starting with.</p><p>First, lets make all these scripts the same</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ln -sf .git/hooks/<span class=o>{</span>post-commit,post-checkout<span class=o>}</span>
+</span></span><span class=line><span class=cl>ln -sf .git/hooks/<span class=o>{</span>post-commit,post-rewrite<span class=o>}</span>
+</span></span><span class=line><span class=cl>ls -al .git/hooks
+</span></span></code></pre></div><p>Now lets hack together <code>.git/hooks/post-commit</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-ruby data-lang=ruby><span class=line><span class=cl><span class=ch>#!/usr/bin/env ruby</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>require</span> <span class=s1>&#39;time&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>TagBuilder</span>
+</span></span><span class=line><span class=cl>  <span class=no>CTAGS_TMP</span> <span class=o>=</span> <span class=s2>&#34;.git/ctags.tmp&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=no>CTAGS_FILE</span> <span class=o>=</span> <span class=s2>&#34;.git/ctags&#34;</span> 
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>initalize</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=o>!</span><span class=n>ctags?</span>
+</span></span><span class=line><span class=cl>      <span class=nb>puts</span> <span class=s2>&#34;ctags not present on system&#34;</span>
+</span></span><span class=line><span class=cl>      <span class=nb>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=o>!</span><span class=n>gemfile?</span>
+</span></span><span class=line><span class=cl>      <span class=nb>puts</span> <span class=s2>&#34;cowardly exiting a project without a gemfile&#34;</span>
+</span></span><span class=line><span class=cl>      <span class=nb>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>end</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>call</span>
+</span></span><span class=line><span class=cl>    <span class=n>create_tmp_tags_for_project</span> <span class=ow>and</span> <span class=n>make_tmp_tags_current</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kp>private</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>create_tmp_tags_for_project</span>
+</span></span><span class=line><span class=cl>    <span class=nb>puts</span> <span class=s2>&#34;building </span><span class=si>#{</span><span class=no>CTAGS_TMP</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>system</span><span class=p>(</span><span class=s2>&#34;ctags -R -f </span><span class=si>#{</span><span class=no>CTAGS_TMP</span><span class=si>}</span><span class=s2> </span><span class=si>#{</span><span class=n>ctags_paths</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>make_tmp_tags_current</span>
+</span></span><span class=line><span class=cl>    <span class=nb>puts</span> <span class=s2>&#34;updating </span><span class=si>#{</span><span class=no>CTAGS_FILE</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>system</span><span class=p>(</span><span class=s2>&#34;mv </span><span class=si>#{</span><span class=no>CTAGS_TMP</span><span class=si>}</span><span class=s2> </span><span class=si>#{</span><span class=no>CTAGS_FILE</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>ctags?</span>
+</span></span><span class=line><span class=cl>    <span class=nb>system</span><span class=p>(</span><span class=s2>&#34;which ctags &gt; /dev/null&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>gemfile?</span>
+</span></span><span class=line><span class=cl>    <span class=no>File</span><span class=o>.</span><span class=n>exist?</span><span class=p>(</span><span class=s1>&#39;.gemfile&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>ctags_paths</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;</span><span class=si>#{</span><span class=n>cwd</span><span class=si>}</span><span class=s2> </span><span class=si>#{</span><span class=n>gem_path</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>cwd</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;.&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>gem_path</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;</span><span class=si>#{</span><span class=n>home</span><span class=si>}</span><span class=s2>/.rbenv/versions/</span><span class=si>#{</span><span class=n>version</span><span class=si>}</span><span class=s2>/lib/ruby/gems&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>home</span>
+</span></span><span class=line><span class=cl>    <span class=no>ENV</span><span class=o>[</span><span class=s2>&#34;HOME&#34;</span><span class=o>]</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>version</span>
+</span></span><span class=line><span class=cl>    <span class=sb>`rbenv version`</span><span class=o>.</span><span class=n>chomp</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s1>&#39; &#39;</span><span class=p>)</span><span class=o>.</span><span class=n>first</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl><span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=no>TagBuilder</span><span class=o>.</span><span class=n>new</span><span class=o>.</span><span class=n>call</span>
+</span></span></code></pre></div><p>Make sure you update permissions to executable!</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>chmod +x .git/hooks/post-commit
+</span></span></code></pre></div><p>This script compiles ctags in your current checkout and gemfiles installed and managed by rbenv. And yeah, it&rsquo;s triggered after a commit!</p><p>Test this in vim with with <code>ctrl + ]</code> to &ldquo;follow a link&rdquo;, and <code>ctrl + o</code> to return back to the buffer you came from.</p></div><footer><p><a rel=license href=http://creativecommons.org/licenses/by-nc-sa/3.0/><img alt="Creative Commons License" style=border-width:0 src=https://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png></a></p><p>This work is licensed under a
+<a rel=license href=http://creativecommons.org/licenses/by-nc-sa/3.0/>Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.</p></footer><script>console.log("Hello world")</script></body></html>

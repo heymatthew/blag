@@ -1,0 +1,75 @@
+<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=/css/style.css><link rel=stylesheet type=text/css href=/css/syntax.css><title>Matthew's Blag | Unique Handles</title></head><body><nav class=sidebar-nav><a href=/posts/ title class=sidebar-nav-item>Posts</a>
+<a href=/ title class=sidebar-nav-item>About</a></nav><div id=content><h1>Unique Handles</h1><time datetime=2016-09-23>Sep 23, 2016</time>
+<i data-feather=tag></i>
+<a class="btn btn-sm btn-outline-dark tag-btn" href=https://matthew.nz/tags/identity>Identity</a>
+<a class="btn btn-sm btn-outline-dark tag-btn" href=https://matthew.nz/tags/usernames>Usernames</a>
+<a class="btn btn-sm btn-outline-dark tag-btn" href=https://matthew.nz/tags/handle>Handle</a>
+<a class="btn btn-sm btn-outline-dark tag-btn" href=https://matthew.nz/tags/nickname>Nickname</a>
+<a class="btn btn-sm btn-outline-dark tag-btn" href=https://matthew.nz/tags/irc>IRC</a><p>For years I used the name &ldquo;Daemons Advocate&rdquo;. I don&rsquo;t know why, but at some stage I stopped liking it. This got tricky, anytime I get to know a name I start to dislike it.</p><p>Picking a handle is too hard. And everything I came up with is taken by some other schmo on the internets because if you&rsquo;re looking for a good short name in 2016, you&rsquo;re way late to the party.</p><p>Generating a randomly pronouncable name for servers is something <a href=https://twitter.com/tveastman>Tom</a> (a mate of mine) dreamt up and I never got sick of those names.</p><p>So why not go further and use that same technique for usernames? Lets pwgen a short name out of garbage and attach an identity to something pronouncable!</p><p>What do we need?</p><ol><li>A way to generate handles, ala pwgen or counting upwards</li><li>A decent way to check if they&rsquo;re taken, ala twatter 404 headers</li><li>Some way to generate some limited set of passwords to geez at</li></ol><p>I&rsquo;ve been meaning to try make some kind of enumerable for a while, so I&rsquo;m going to try hone that ruby. If you&rsquo;re going to play along at home you&rsquo;re gonna need <code>pwgen</code>, <code>ruby</code> and <code>vim</code> binaries. The last one is not required, but highly recommended ;-).</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-ruby data-lang=ruby><span class=line><span class=cl><span class=no>HandleGenerator</span> <span class=o>=</span> <span class=no>Struct</span><span class=o>.</span><span class=n>new</span><span class=p>(</span><span class=ss>:name_length</span><span class=p>)</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>next</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>enum_for</span><span class=p>(</span><span class=ss>:next</span><span class=p>)</span> <span class=k>unless</span> <span class=nb>block_given?</span>
+</span></span><span class=line><span class=cl>    <span class=kp>loop</span> <span class=p>{</span> <span class=k>yield</span> <span class=n>pwgen_name</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kp>private</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>pwgen_name</span>
+</span></span><span class=line><span class=cl>    <span class=sb>`pwgen -0A </span><span class=si>#{</span><span class=n>name_length</span><span class=si>}</span><span class=sb>`</span><span class=o>.</span><span class=n>chomp</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl><span class=k>end</span>
+</span></span></code></pre></div><p>Awesome! Now we can pick names!</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-ruby data-lang=ruby><span class=line><span class=cl><span class=n>name_length</span> <span class=o>=</span> <span class=mi>6</span>
+</span></span><span class=line><span class=cl><span class=n>name_enumerator</span> <span class=o>=</span> <span class=no>HandleGenerator</span><span class=o>.</span><span class=n>new</span><span class=p>(</span><span class=n>name_length</span><span class=p>)</span><span class=o>.</span><span class=n>next</span>
+</span></span><span class=line><span class=cl><span class=mi>10</span><span class=o>.</span><span class=n>times</span> <span class=p>{</span> <span class=nb>puts</span> <span class=n>name_enumerator</span><span class=o>.</span><span class=n>next</span> <span class=p>}</span>
+</span></span></code></pre></div><p>But before I continue down that path, I&rsquo;m curious about the shorter handles as these would be hot property. Fun facts:</p><ul><li>Twatter gives 404s for some handles but calls them &ldquo;taken&rdquo; if you go to register them. So a 404 gives a possible name, but not a fo&rsquo; sure name.</li><li>There are 26^2 = 676 handles with 2 chars, and these 15 appear untaken but seem to be reserved: ie, is, wi, hv, he, pb, pu, rp, zb, vy, co, jz, gl, fg and uk</li><li>There are 26^3 = 17,576 handles with 3 chars, and 461 appear to be untaken</li></ul><p>Hitting their API will give me assurance but it&rsquo;s rate limited to 100 hits an hour&ndash; or something. I don&rsquo;t care to read their 1155 word <a href=https://dev.twitter.com/rest/public/rate-limiting>api essay</a> because it&rsquo;s sooooo.</p><p>So brute force 404s, then take the shortlist to the api?</p><p>Woo!</p><p>To get around rate limiting, I&rsquo;m going to try hit public pages that&rsquo;d usually return 404 if the handle isn&rsquo;t taken. I&rsquo;ll let you use your imagination, or read <a href=https://dev.twitter.com/rest/public/rate-limiting>that essay</a> if you want to keep going with that.</p><p>Here&rsquo;s what I ended up with&mldr;</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-ruby data-lang=ruby><span class=line><span class=cl><span class=nb>require</span> <span class=s1>&#39;net/http&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=no>HandleAvailable</span> <span class=o>=</span> <span class=no>Struct</span><span class=o>.</span><span class=n>new</span><span class=p>(</span><span class=ss>:name</span><span class=p>)</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>call</span>
+</span></span><span class=line><span class=cl>    <span class=n>services</span><span class=o>.</span><span class=n>shuffle</span><span class=o>.</span><span class=n>all?</span> <span class=k>do</span> <span class=o>|</span><span class=n>service</span><span class=o>|</span>
+</span></span><span class=line><span class=cl>      <span class=n>response_code</span><span class=p>(</span><span class=ss>:from</span> <span class=o>=&gt;</span> <span class=n>service</span><span class=p>)</span> <span class=o>==</span> <span class=mi>404</span>
+</span></span><span class=line><span class=cl>    <span class=k>end</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kp>private</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>response_code</span><span class=p>(</span><span class=ss>from</span><span class=p>:)</span>
+</span></span><span class=line><span class=cl>    <span class=no>Net</span><span class=o>::</span><span class=no>HTTP</span><span class=o>.</span><span class=n>get_response</span><span class=p>(</span><span class=n>from</span><span class=p>)</span><span class=o>.</span><span class=n>code</span><span class=o>.</span><span class=n>to_i</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>services</span>
+</span></span><span class=line><span class=cl>    <span class=o>[</span>
+</span></span><span class=line><span class=cl>      <span class=no>URI</span><span class=o>.</span><span class=n>parse</span><span class=p>(</span><span class=s2>&#34;https://twitter.com/</span><span class=si>#{</span><span class=nb>name</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>      <span class=no>URI</span><span class=o>.</span><span class=n>parse</span><span class=p>(</span><span class=s2>&#34;https://github.com/</span><span class=si>#{</span><span class=nb>name</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>      <span class=no>URI</span><span class=o>.</span><span class=n>parse</span><span class=p>(</span><span class=s2>&#34;https://disqus.com/by/</span><span class=si>#{</span><span class=nb>name</span><span class=si>}</span><span class=s2>/&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>      <span class=no>URI</span><span class=o>.</span><span class=n>parse</span><span class=p>(</span><span class=s2>&#34;https://www.youtube.com/user/</span><span class=si>#{</span><span class=nb>name</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>      <span class=no>URI</span><span class=o>.</span><span class=n>parse</span><span class=p>(</span><span class=s2>&#34;http://</span><span class=si>#{</span><span class=nb>name</span><span class=si>}</span><span class=s2>.tumblr.com/&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=o>]</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl><span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=no>NextAvailableHandle</span> <span class=o>=</span> <span class=no>Struct</span><span class=o>.</span><span class=n>new</span><span class=p>(</span><span class=ss>:name_generator</span><span class=p>)</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>next</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>enum_for</span><span class=p>(</span><span class=ss>:next</span><span class=p>)</span> <span class=k>unless</span> <span class=nb>block_given?</span>
+</span></span><span class=line><span class=cl>    <span class=kp>loop</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>      <span class=k>yield</span> <span class=n>next_available_name</span>
+</span></span><span class=line><span class=cl>    <span class=k>end</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kp>private</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>def</span> <span class=nf>next_available_name</span>
+</span></span><span class=line><span class=cl>    <span class=kp>loop</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>      <span class=nb>name</span> <span class=o>=</span> <span class=n>name_generator</span><span class=o>.</span><span class=n>next</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=nb>name</span> <span class=k>if</span> <span class=no>HandleAvailable</span><span class=o>.</span><span class=n>new</span><span class=p>(</span><span class=nb>name</span><span class=p>)</span><span class=o>.</span><span class=n>call</span>
+</span></span><span class=line><span class=cl>    <span class=k>end</span>
+</span></span><span class=line><span class=cl>  <span class=k>end</span>
+</span></span><span class=line><span class=cl><span class=k>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>name_enumerator</span> <span class=o>=</span> <span class=no>HandleGenerator</span><span class=o>.</span><span class=n>new</span><span class=p>(</span><span class=n>name_length</span><span class=p>)</span><span class=o>.</span><span class=n>next</span>
+</span></span><span class=line><span class=cl><span class=n>search_enumerator</span> <span class=o>=</span> <span class=no>NextAvailableHandle</span><span class=o>.</span><span class=n>new</span><span class=p>(</span><span class=n>name_enumerator</span><span class=p>)</span><span class=o>.</span><span class=n>next</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># find me 10 usernames that might be untaken</span>
+</span></span><span class=line><span class=cl><span class=mi>10</span><span class=o>.</span><span class=n>times</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>  <span class=nb>puts</span> <span class=n>search_enumerator</span><span class=o>.</span><span class=n>next</span>
+</span></span><span class=line><span class=cl><span class=k>end</span>
+</span></span></code></pre></div><p>Now what you end up with does need a bit of human filtering based on taste, but they&rsquo;re all pronouncable. To sample&ndash; eitohs, ohphah, and voatee are all names that came out of running this.</p><p>All stories deserve a happy ending. I found that I liked the name <code>@wohyah</code> and I don&rsquo;t think that&rsquo;s half bad!</p></div><footer><p><a rel=license href=http://creativecommons.org/licenses/by-nc-sa/3.0/><img alt="Creative Commons License" style=border-width:0 src=https://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png></a></p><p>This work is licensed under a
+<a rel=license href=http://creativecommons.org/licenses/by-nc-sa/3.0/>Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.</p></footer><script>console.log("Hello world")</script></body></html>
