@@ -1,5 +1,5 @@
 body {
-  max-width: 900px;
+  max-width: 40em;
   padding: 10px;
   margin: auto;
   line-height: 1.5;
@@ -15,6 +15,14 @@ body {
 pre.chroma {
   padding: 10px;
   background: #eee;
+}
+
+header a {
+  border-bottom: none;
+}
+
+footer, header {
+  margin: 2em 0;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -36,7 +44,7 @@ a, a:visited {
 
 a.anchor {
   position: absolute;
-  left: -20px;
+  left: -22px;
   bottom: 5px;
   font-size: 0.7em;
   border-bottom: none;
