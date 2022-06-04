@@ -11,3 +11,8 @@ menu:
     - name: Posts
       url: /posts/
       weight: 2
+
+# Don't use inline styles for code
+markup:
+  highlight:
+    noClasses: false
