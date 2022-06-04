@@ -6,7 +6,8 @@
 <a class="btn btn-sm btn-outline-dark tag-btn" href=https://matthew.nz/tags/networking>networking</a><p>While I was in Airport, I had a time limit on my Wifi which I used up
 too fast. So now all I&rsquo;ve got on my mind is the challenge of getting
 back onto the internet.</p><p>Who limits Wifi anyway? What are we? Savages?</p><p>In this case I didn&rsquo;t have to do much because I had a snippet of code I
-took from my old workmate <a href=https://www.sanityinc.com/about>Steve Purcell</a>. It&rsquo;s sole purpose is to
+took from my old workmate <a href=https://www.sanityinc.com/about target=_blank rel=noopener>Steve Purcell</a>
+. It&rsquo;s sole purpose is to
 generate a random Mac address, and make that callable from the zsh
 shell.</p><p>Because he never got around to publishing it, here it goes!</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=k>function</span> randommac<span class=o>()</span> <span class=o>{</span>
 </span></span><span class=line><span class=cl>  ruby -e <span class=s1>&#39;puts (&#34;%02x&#34;%((rand 64)*4|2))+(0..4).inject(&#34;&#34;){|s,x|s+&#34;:%02x&#34;%(rand 256)}&#39;</span>
