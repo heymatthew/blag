@@ -8,12 +8,13 @@ permalinks:
 
 menu:
   main:
-    - name: Home
-      url: /
-      weight: 1
     - name: Posts
       url: /posts/
       weight: 2
+
+    - name: About
+      url: /
+      weight: 999
 
 # Don't use inline styles for code
 markup:
