@@ -28,3 +28,11 @@ a, a:visited {
   border-bottom: 2px solid;
   padding-bottom: 1px;
 }
+
+a.anchor {
+  position: absolute;
+  left: -20px;
+  bottom: 5px;
+  font-size: 0.7em;
+  border-bottom: none;
+}
