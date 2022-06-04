@@ -1,10 +1,9 @@
 {{ $dateTime := .PublishDate.Format "2006-01-02" }}
-{{ $dateFormat := .Site.Params.dateFormat | default "Jan 2, 2006" }}
+{{ $dateFormat := .Site.Params.dateFormat | default "January 2, 2006" }}
 
-<time datetime="{{ $dateTime }}">{{ .PublishDate.Format $dateFormat }}</time>
-{{ with .Params.tags }}
-  {{ range . }}
-    {{ $href := print (relURL "tags/") (urlize .) }}
-    <a class="btn btn-sm btn-outline-dark tag-btn" href="{{ $href }}">#{{ . }}</a>
+<p>
+  Published <time datetime="{{ $dateTime }}">{{ .PublishDate.Format $dateFormat }}</time>
+  {{ range (.GetTerms "tags") }}
+    <a href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a>
   {{ end }}
-{{ end }}
+</p>
