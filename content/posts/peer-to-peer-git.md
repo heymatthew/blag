@@ -13,7 +13,7 @@ So you've got a few options here:
 3. setup a small read only local git server and pull between neighbours,
 4. or use some kind of highly available decentralised storage as an upstream like [ipfs git][4].
 
-I feel the easiest thing to do is just to run that read only git option #3. And it's not that hard either, you just need a git alias to run in a shel, and your neighbour to configure and pull from you.
+I feel the easiest thing to do is just to run that read only git option #3. And it's not that hard either, you just need a git alias to run in a shell, and your neighbour to configure and pull from you.
 
 # Setting up your repo
 
