@@ -15,7 +15,7 @@ So you've got a few options here:
 
 I feel the easiest thing to do is just to run that read only git option #3. And it's not that hard either, you just need a git alias to run in a shell, and your neighbour to configure and pull from you.
 
-# Setting up your repo
+## Setting up your repo
 
 Firstly, create a 'serve' alias for your user so you can share your work...
 
@@ -32,7 +32,7 @@ git serve
 
 This should say "Ready to rumble" followed by log when people connect to you. When you want to shut it down, just it "Control C" and it'll kill the git server.
 
-# Connecting to your neighbour
+## Connecting to your neighbour
 
 Assuming you've setup your server, you're now going to want to know your IP address or hostname so you can tell other people who to connect to.
 
