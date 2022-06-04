@@ -1,8 +1,10 @@
 ---
 title: "Wifi Tricks and the Secret to Endless Airport Internet"
-tags: ["hack", "shell", "networking"]
-date: 2017-11-16T20:43:52+13:00
 summary: Set a random mac address in OSX.
+date: 2017-11-16T20:43:52+13:00
+tags:
+  - script
+  - networking
 ---
 
 While I was in Airport, I had a time limit on my Wifi which I used up

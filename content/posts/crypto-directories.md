@@ -2,6 +2,10 @@
 title: "Encrypted Directories"
 date: "2017-06-03T18:24:40+12:00"
 summary: A Ruby script to encrypt or decrypt directories with GPG.
+tags:
+  - script
+  - ruby
+  - crypto
 ---
 
 In the *nix ecosystem, there are a lot of tools that are great to

@@ -1,8 +1,12 @@
 ---
 title: "CTags in Ruby: Make code feel like a wiki"
-date: "2017-02-21T08:49:22+13:00"
-categories: ["Vim", "Ctags", "Ruby", "Git"]
 summary: Hook up jump to definition for Ruby in Vim.
+date: "2017-02-21T08:49:22+13:00"
+tags:
+  - vim
+  - ruby
+  - script
+  - git
 ---
 
 In a browser you markup for links. A wiki builds on this behavior to describes topics, linking nouns to pages in context that link to other nown pages.

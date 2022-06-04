@@ -1,9 +1,11 @@
 ---
-tags: ["Identity", "Usernames", "Handle", "Nickname", "IRC"]
-categories: ["Projects", "Scripting", "Writeup"]
 date: "2016-09-23T16:51:31+13:00"
-title: "Unique Handles"
+title: "Discovering Unique Handles"
 summary: Brute forcing a username across socail networks with Ruby.
+tags:
+  - script
+  - ruby
+  - irc
 ---
 
 For years I used the name "Daemons Advocate". I don't know why, but at some stage I stopped liking it. This got tricky, anytime I get to know a name I start to dislike it.
