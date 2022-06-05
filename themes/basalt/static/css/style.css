@@ -52,6 +52,10 @@ a, a:visited {
   padding-bottom: 1px;
 }
 
+a:hover {
+  border-bottom: 4px solid;
+}
+
 a.anchor {
   position: absolute;
   left: -22px;
