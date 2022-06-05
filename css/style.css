@@ -52,6 +52,10 @@ a, a:visited {
   padding-bottom: 1px;
 }
 
+a:hover {
+  border-bottom: 4px solid;
+}
+
 a.anchor {
   position: absolute;
   left: -22px;
@@ -59,7 +63,6 @@ a.anchor {
   font-size: 0.7em;
   border-bottom: none;
 }
-
 
 /**
  * Icon to visually see external links
