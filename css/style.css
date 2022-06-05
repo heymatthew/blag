@@ -29,8 +29,8 @@ header, nav, main, footer {
  * Code block styles
  * See also syntax.css
  */
-pre.chroma {
-  padding: 10px;
+pre {
+  padding: 0.5em;
   background: #eee;
   overflow: auto;
 }
@@ -52,18 +52,16 @@ p {
 a, a:visited {
   color: #4F4D8C;
   text-decoration: none;
-  border-bottom: 2px solid;
   padding-bottom: 1px;
 }
 
-a:hover {
-  border-bottom: 4px solid;
-}
+a, a:visited { border-bottom: 0.1em solid; }
+a:hover { border-bottom: 0.2em solid; }
 
 a.anchor {
   position: absolute;
-  left: -20px;
-  bottom: 0px;
+  left: -1em;
+  bottom: 0;
   font-size: 0.9em;
   border-bottom: none;
 }
