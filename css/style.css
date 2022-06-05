@@ -15,10 +15,14 @@ header, nav, main, footer {
   margin: auto;
 }
 
+/**
+ * Splash of colour for the header
+ * See https://cssgradient.io/
+ */
 .ribbon {
-  background: #F7F8F8;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #ACBB78, #F7F8F8);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #ACBB78, #F7F8F8); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: rgb(193,181,200);
+  background: linear-gradient(90deg, rgba(193,181,200,1) 0%, rgba(206,213,255,1) 53%, rgba(255,216,161,1) 100%);
+  border-bottom: 1px solid;
 }
 
 /**
@@ -62,6 +66,10 @@ a.anchor {
   bottom: 0px;
   font-size: 0.9em;
   border-bottom: none;
+}
+
+a.sidebar-nav-item {
+  margin-right: 1em;
 }
 
 /**
