@@ -1,0 +1,9 @@
+{{ $dateTime := .PublishDate.Format "2006-01-02" }}
+{{ $dateFormat := .Site.Params.dateFormat | default "January 2, 2006" }}
+
+<p>
+  Published <time datetime="{{ $dateTime }}">{{ .PublishDate.Format $dateFormat }}</time>
+  {{ range (.GetTerms "tags") }}
+    <a href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a>
+  {{ end }}
+</p>

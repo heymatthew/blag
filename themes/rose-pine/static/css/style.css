@@ -1,0 +1,81 @@
+body {
+  margin: 0;
+  line-height: 1.5;
+  color: #222;
+  background: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, Helvetica, Arial, sans-serif;
+}
+
+/**
+ * Center content
+ */
+header, nav, main, footer {
+  max-width: 40em;
+  padding: 1em 1.5em;
+  margin: auto;
+}
+
+/**
+ * Splash of colour for the header
+ * See https://cssgradient.io/
+ */
+.ribbon {
+  background: rgb(193,181,200);
+  background: linear-gradient(90deg, rgba(193,181,200,1) 0%, rgba(206,213,255,1) 53%, rgba(255,216,161,1) 100%);
+  border-bottom: 1px solid;
+}
+
+/**
+ * Code block styles
+ * See also syntax.css
+ */
+pre {
+  padding: 0.5em;
+  background: #eee;
+  overflow: auto;
+}
+
+header a {
+  border-bottom: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #262626;
+  position: relative;
+  margin: 1em 0 0 0;
+}
+
+p {
+  margin: 0.5em 0;
+}
+
+a, a:visited {
+  color: #4F4D8C;
+  text-decoration: none;
+  padding-bottom: 1px;
+}
+
+a, a:visited { border-bottom: 0.1em solid; }
+a:hover { border-bottom: 0.2em solid; }
+
+a.sidebar-nav-item {
+  margin-right: 1em;
+}
+
+/**
+ * Icon to visually see external links
+ * https://christianoliff.com/blog/styling-external-links-with-an-icon-in-css/
+ */
+a[href^="http"]::after,
+a[href^="https://"]::after
+{
+  content: "";
+  width: 11px;
+  height: 11px;
+  margin-left: 4px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z'/%3E%3Cpath fill-rule='evenodd' d='M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
+}
