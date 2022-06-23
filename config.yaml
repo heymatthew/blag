@@ -1,7 +1,7 @@
 baseURL: 'https://matthew.nz/'
 languageCode: en-nz
 title: Matthew's blag
-theme: basalt
+theme: rose-pine
 
 uglyurls: true
 
