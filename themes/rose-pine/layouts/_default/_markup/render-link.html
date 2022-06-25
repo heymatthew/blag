@@ -4,6 +4,6 @@
     title="{{ . }}"
   {{ end }}
   {{ if strings.HasPrefix .Destination "http" }}
-    target="_blank" rel="noopener"
+    rel="noopener"
   {{ end }}
 >{{ .Text | replaceRE " " "&nbsp;" | safeHTML }}</a>
