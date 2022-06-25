@@ -4,8 +4,7 @@
   {{ range .Pages.ByPublishDate.Reverse }}
     <article>
       <p><a class="title" href="{{ .RelPermalink }}">{{ .Title }}</a></p>
-      {{ partial "metadata.html" . }}
-      {{ .Summary }}
+      <p>{{ .Summary }}</p>
     </article>
   {{ end }}
   </section>
