@@ -4,7 +4,7 @@
 <a href=/tags/networking.html>#networking</a></p><p>While I was in Airport, I had a time limit on my Wifi which I used up
 too fast. So now all I&rsquo;ve got on my mind is the challenge of getting
 back onto the internet.</p><p>Who limits Wifi anyway? What are we? Savages?</p><p>In this case I didn&rsquo;t have to do much because I had a snippet of code I
-took from my old workmate <a href=https://www.sanityinc.com/about target=_blank rel=noopener>Steve&nbsp;Purcell</a>
+took from my old workmate <a href=https://www.sanityinc.com/about rel=noopener>Steve&nbsp;Purcell</a>
 . It&rsquo;s sole purpose is to
 generate a random Mac address, and make that callable from the zsh
 shell.</p><p>Because he never got around to publishing it, here it goes!</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=k>function</span> randommac<span class=o>()</span> <span class=o>{</span>
@@ -19,5 +19,4 @@ around being identified. In my case, I reset my hardware address by
 running:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>sudo ifconfig en0 lladdr <span class=k>$(</span>randommac<span class=k>)</span>
 </span></span></code></pre></div><p>Reconnecting got me another hit of that sweet sweet wifi! Thanks Steve!</p></main><footer><p><a rel=license href=http://creativecommons.org/licenses/by-nc-sa/3.0/><img alt="Creative Commons License" style=border-width:0 src=https://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png></a></p><p>This content published with a Creative Commons
 <a rel=license href=http://creativecommons.org/licenses/by-nc-sa/3.0/>Attribution-NonCommercial-ShareAlike 3.0 Unported</a>
-License.</p><p>This website published under an
-<a rel=license href=https://choosealicense.com/licenses/mit/>MIT licence</a>.</p></footer><script>console.log("Hello world")</script></body></html>
+License.</p></footer><script>console.log("Hello world")</script></body></html>
