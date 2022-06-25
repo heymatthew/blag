@@ -1,9 +1,149 @@
+:root {
+	--base: #faf4ed;
+	--surface: #fffaf3;
+	--overlay: #f2e9e1;
+	--muted: #9893a5;
+	--subtle: #797593;
+	--text: #575279;
+
+	--love: #b4637a;
+	--love-low: rgba(180, 99, 122, 0.1);
+	--love-med: rgba(180, 99, 122, 0.15);
+
+	--gold: #ea9d34;
+	--gold-low: rgba(234, 157, 52, 0.1);
+	--gold-med: rgba(234, 157, 52, 0.15);
+
+	--rose: #d7827e;
+	--rose-low: rgba(215, 130, 126, 0.1);
+	--rose-med: rgba(215, 130, 126, 0.15);
+
+	--pine: #286983;
+	--pine-low: rgba(40, 105, 131, 0.1);
+	--pine-med: rgba(40, 105, 131, 0.2);
+
+	--foam: #56949f;
+	--foam-low: rgba(86, 148, 159, 0.1);
+	--foam-med: rgba(86, 148, 159, 0.15);
+
+	--iris: #907aa9;
+	--iris-low: rgba(144, 122, 169, 0.1);
+	--iris-med: rgba(144, 122, 169, 0.15);
+
+	--highlight-low: rgba(110, 106, 134, 0.05);
+	--highlight-low-blend: rgb(244, 237, 232);
+
+	--highlight-med: rgba(110, 106, 134, 0.08);
+	--highlight-med-blend: rgb(223, 218, 217);
+
+	--highlight-high: rgba(110, 106, 134, 0.15);
+	--highlight-high-blend: rgb(206, 202, 205);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--base: #191724;
+		--surface: #1f1d2e;
+		--overlay: #26233a;
+		--muted: #6e6a86;
+		--subtle: #908caa;
+		--text: #e0def4;
+
+		--love: #eb6f92;
+		--love-low: rgba(235, 111, 146, 0.1);
+		--love-med: rgba(235, 111, 146, 0.15);
+
+		--gold: #f6c177;
+		--gold-low: rgba(246, 193, 119, 0.1);
+		--gold-med: rgba(246, 193, 119, 0.15);
+
+		--rose: #ebbcba;
+		--rose-low: rgba(235, 188, 186, 0.1);
+		--rose-med: rgba(235, 188, 186, 0.15);
+
+		--pine: #31748f;
+		--pine-low: rgba(49, 116, 143, 0.1);
+		--pine-med: rgba(49, 116, 143, 0.15);
+
+		--foam: #9ccfd8;
+		--foam-low: rgba(156, 207, 216, 0.1);
+		--foam-med: rgba(156, 207, 216, 0.15);
+
+		--iris: #c4a7e7;
+		--iris-low: rgba(196, 167, 231, 0.1);
+		--iris-med: rgba(196, 167, 231, 0.15);
+
+		--highlight-low: rgba(110, 106, 134, 0.1);
+		--highlight-low-blend: rgb(33, 32, 46);
+
+		--highlight-med: rgba(110, 106, 134, 0.2);
+		--highlight-med-blend: rgb(64, 61, 82);
+
+		--highlight-high: rgba(110, 106, 134, 0.4);
+		--highlight-high-blend: rgb(82, 79, 103);
+	}
+}
+
+.animate-enter {
+	opacity: 0;
+	animation: enter 500ms forwards;
+	animation-delay: calc(var(--stagger) * 200ms);
+}
+
+@keyframes enter {
+	0% {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		animation-delay: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
+/**
+ * Icon to visually see external links
+ * https://christianoliff.com/blog/styling-external-links-with-an-icon-in-css/
+ */
+a[href^="http"]::after, a[href^="https://"]::after {
+  content: "";
+  width: 11px;
+  height: 11px;
+  margin-left: 4px;
+  color: var(--iris);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(144, 122, 169)' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z'/%3E%3Cpath fill-rule='evenodd' d='M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
+}
+
+/* FIXME alter the fill to match link color with single SVG*/
+@media (prefers-color-scheme: dark) {
+  a[href^="http"]::after, a[href^="https://"]::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(196, 167, 231)' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z'/%3E%3Cpath fill-rule='evenodd' d='M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z'/%3E%3C/svg%3E");
+  }
+}
+
 body {
   margin: 0;
   line-height: 1.5;
-  color: #222;
-  background: #f5f5f5;
+  color: var(--text);
+  background: var(--base);
   font-family: -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, Helvetica, Arial, sans-serif;
+	background-color: var(--base);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 /**
@@ -16,31 +156,23 @@ header, nav, main, footer {
 }
 
 /**
- * Splash of colour for the header
- * See https://cssgradient.io/
- */
-.ribbon {
-  background: rgb(193,181,200);
-  background: linear-gradient(90deg, rgba(193,181,200,1) 0%, rgba(206,213,255,1) 53%, rgba(255,216,161,1) 100%);
-  border-bottom: 1px solid;
-}
-
-/**
  * Code block styles
  * See also syntax.css
  */
 pre {
+  border-radius: 0.5em;
   padding: 0.5em;
-  background: #eee;
+	background-color: var(--overlay);
   overflow: auto;
 }
 
-header a {
-  border-bottom: none;
+code {
+	background-color: var(--overlay);
 }
 
+
 h1, h2, h3, h4, h5, h6 {
-  color: #262626;
+  color: var(--text);
   position: relative;
   margin: 1em 0 0 0;
 }
@@ -50,32 +182,14 @@ p {
 }
 
 a, a:visited {
-  color: #4F4D8C;
+  color: var(--iris);
   text-decoration: none;
   padding-bottom: 1px;
 }
 
-a, a:visited { border-bottom: 0.1em solid; }
-a:hover { border-bottom: 0.2em solid; }
+a, a:visited { border-bottom: 0.1em solid var(--iris); }
+a:hover { border-bottom: 0.2em solid var(--iris); }
 
 a.sidebar-nav-item {
   margin-right: 1em;
-}
-
-/**
- * Icon to visually see external links
- * https://christianoliff.com/blog/styling-external-links-with-an-icon-in-css/
- */
-a[href^="http"]::after,
-a[href^="https://"]::after
-{
-  content: "";
-  width: 11px;
-  height: 11px;
-  margin-left: 4px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z'/%3E%3Cpath fill-rule='evenodd' d='M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z'/%3E%3C/svg%3E");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  display: inline-block;
 }
