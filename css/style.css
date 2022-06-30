@@ -190,6 +190,19 @@ a, a:visited {
 a, a:visited { border-bottom: 0.1em solid var(--iris); }
 a:hover { border-bottom: 0.2em solid var(--iris); }
 
+header a:hover { position: relative; border-bottom: none; }
+header a:hover::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  left: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(130deg,#ff7a18,#af002d 41.07%,#319197 76.05%);
+}
+
+
 a.sidebar-nav-item {
   margin-right: 1em;
 }
